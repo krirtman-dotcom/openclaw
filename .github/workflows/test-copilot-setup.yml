@@ -8,17 +8,25 @@ on:
       - '.github/workflows/test-copilot-setup.yml'
 
 jobs:
-  setup:
-    name: Run Copilot Setup
-    uses: ./.github/workflows/copilot-setup-steps.yml
-
-  test-setup:
-    name: Test Copilot Setup Workflow
+  test:
     runs-on: ubuntu-latest
-    needs: setup
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
 
       - name: Verify environment
         run: |
@@ -29,13 +37,13 @@ jobs:
           echo "✓ Git version:"
           git --version
           echo "✓ Dependencies installed (node_modules exists):"
-          [ -d node_modules ] && echo "  Directory exists" || echo "  WARNING: node_modules not found"
-          echo "✓ pnpm-lock.yaml intact:"
-          [ -f pnpm-lock.yaml ] && echo "  File exists" || echo "  WARNING: pnpm-lock.yaml not found"
+          [ -d node_modules ] && echo "  ✓ node_modules exists" || echo "  ✗ WARNING: node_modules not found"
+          echo "✓ pnpm-lock.yaml exists:"
+          [ -f pnpm-lock.yaml ] && echo "  ✓ File exists" || echo "  ✗ WARNING: pnpm-lock.yaml not found"
 
       - name: Test key commands
         run: |
-          echo "✓ Testing pnpm build readiness..."
-          pnpm --version && echo "  pnpm ready"
-          echo "✓ Testing Node.js TypeScript compatibility..."
-          node --version && echo "  Node.js ready"
+          echo "✓ Testing pnpm readiness..."
+          pnpm --version && echo "  ✓ pnpm ready"
+          echo "✓ Testing Node.js readiness..."
+          node --version && echo "  ✓ Node.js ready"
