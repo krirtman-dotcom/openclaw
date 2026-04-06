@@ -95,6 +95,7 @@ For coordinated change sets that genuinely need more than 10 PRs, join the **#cl
 
 - Test locally with your OpenClaw instance
 - Run tests: `pnpm build && pnpm check && pnpm test`
+- **For Copilot agents**: The repository includes a `.github/workflows/copilot-setup-steps.yml` file that pre-configures the Copilot cloud agent environment with Node 22+, pnpm, and cached dependencies. This workflow is automatically called by Copilot agents before they start work, so you don't need to manually configure anything.
 - For extension/plugin changes, run the fast local lane first:
   - `pnpm test:extension <extension-name>`
   - `pnpm test:extension --list` to see valid extension ids

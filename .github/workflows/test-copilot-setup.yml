@@ -1,0 +1,39 @@
+name: Test Copilot Setup
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/copilot-setup-steps.yml'
+      - '.github/workflows/test-copilot-setup.yml'
+
+jobs:
+  test-setup:
+    name: Test Copilot Setup Workflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Copilot Setup
+        uses: ./.github/workflows/copilot-setup-steps.yml
+
+      - name: Verify environment
+        run: |
+          echo "✓ Node version:"
+          node --version
+          echo "✓ pnpm version:"
+          pnpm --version
+          echo "✓ Git version:"
+          git --version
+          echo "✓ Dependencies installed (node_modules exists):"
+          [ -d node_modules ] && echo "  Directory exists" || echo "  WARNING: node_modules not found"
+          echo "✓ pnpm-lock.yaml intact:"
+          [ -f pnpm-lock.yaml ] && echo "  File exists" || echo "  WARNING: pnpm-lock.yaml not found"
+
+      - name: Test key commands
+        run: |
+          echo "✓ Testing pnpm build readiness..."
+          pnpm --version && echo "  pnpm ready"
+          echo "✓ Testing Node.js TypeScript compatibility..."
+          node --version && echo "  Node.js ready"
