@@ -8,15 +8,17 @@ on:
       - '.github/workflows/test-copilot-setup.yml'
 
 jobs:
+  setup:
+    name: Run Copilot Setup
+    uses: ./.github/workflows/copilot-setup-steps.yml
+
   test-setup:
     name: Test Copilot Setup Workflow
     runs-on: ubuntu-latest
+    needs: setup
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Run Copilot Setup
-        uses: ./.github/workflows/copilot-setup-steps.yml
 
       - name: Verify environment
         run: |
